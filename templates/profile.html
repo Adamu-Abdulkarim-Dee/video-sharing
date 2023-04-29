@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ profile.user }}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+</head>
+<style>
+    .thumnail{
+        object-fit: cover;
+        width: 500px;
+    }
+    .thumnails{
+      height: 100% !important;
+      
+    }
+    .my-card{
+      height: 100% !important;
+    }
+    .icons{
+        display: inline-flex;
+        gap: 50px;
+    }
+</style>
+<body>
+    <div class="container">
+        <div class="columns">
+
+            {% for profile in user_profile %}
+            <div class="column is-3">
+                <div class="card">
+                    <div class="card-image">
+                        <figure class="image is-4by3">
+                          <img class="thumnail" src="{{ profile.profile_photo.url }}" alt="Placeholder image">
+                        </figure>
+                      </div>
+                </div>
+            </div>
+
+            <div class="column">
+                <div class="card p-1">
+                    <h2 class="has-text-centered is-size-1">About</h2>
+                    <p class="has-text-centered">{{ profile.about }}</p>
+                    <div class="tabs is-centered">
+                        <ul>
+                            <li class="is-active"><a href="">Twitter</a></li>
+                            <li class="is-active"><a href="">Website</a></li>
+                            <li class="is-active"><a href="">Linkedln</a></li>
+                        </ul>
+                    </div>
+                    <a href="{% url 'Edit-Profile' profile.slug %}" class="is-success button">Edit</a>
+                </div>
+            </div>
+            {% endfor %}
+
+
+        </div>
+    </div>
+</body>
+</html>
