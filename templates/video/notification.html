@@ -11,13 +11,17 @@
 </head>
 <body>
     <div class="container">
-        <div class="row">
-            {% for notification in object_list %}
-            <div class="col">
-                <p>{{ notification.message }}</p>
-                <a href="{% url 'Play-Video' notification.url.slug  %}">View</a>
-
+        <div class="row justify-content-center">
+            {% for notification in notifications reversed %}
+            {% if not notification.read %}
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <a href="{{ notification.link }}">{{ notification.message }}</a>
+                    </div>
+                </div>
             </div>
+            {% endif %}
             {% endfor %}
         </div>
     </div>

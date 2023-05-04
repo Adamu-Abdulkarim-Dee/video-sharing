@@ -6,7 +6,7 @@ from django.forms import FileField
 
 
 class CommentForm(forms.ModelForm):
-    comments = forms.CharField(label='Comments', widget=forms.Textarea(attrs={'rows':'3'}), max_length=200)
+    comments = forms.CharField(label='Comments', widget=forms.Textarea(attrs={'rows':'1'}), max_length=200)
 
     class Meta:
         model = Comment

@@ -1,64 +1,57 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Video, ReportVideo, Comment, Profile, Notification
 from .forms import VideoForm, ReportVideoForm, CommentForm, ProfileForm
-from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.list import ListView
 from django.urls import reverse_lazy
 from moviepy.video.io.VideoFileClip import VideoFileClip
 from django.core.exceptions import ValidationError
 import cv2
 import numpy as np
-import requests
-from django.http import HttpResponseBadRequest
 
-NUDE_URL = 'https://c1.ttcache.com/thumbnail/IgaD0XR4MSe/288x162/1160-wRj.jpg'
-
-
-# Create your views here.
 def videos(request):
+
+    #I want to access user ip address just to show user 
     my_videos = Video.objects.all()
-    unread_notifications = Notification.objects.filter(user=request.user, is_read=False).count()
     context = {
         'my_videos':my_videos,
-        'unread_notifications':unread_notifications
-
     }
     return render(request, 'video/videos.html', context)
 
 def play_video(request, slug):
-    play = get_object_or_404(Video, slug=slug)
-    public_comments = Comment.objects.filter(post_id=play)
+    post = get_object_or_404(Video, slug=slug)
+    public_comments = Comment.objects.filter(post_id=post)
 
     if request.method == 'POST':
         form = CommentForm(request.POST)
         if form.is_valid():
             comments = form.cleaned_data['comments']
             new_comment = Comment.objects.create(
-                comments=comments, post=play, user=request.user
-            )
-            Notification.objects.create(
-                user=request.user,
-                url=play,
-                message='someone commented on your post'
+                comments=comments, post=post, user=request.user
             )
             return redirect('Video')
     else:
         form = CommentForm()
 
     context = {
-        'play':play,
+        'post':post,
         'public_comments':public_comments,
         'form':form,
     }
     return render(request, 'video/play_video.html', context)
 
-class NotificationListView(ListView):
-    model = Notification
-    template_name = 'video/notification.html'
+def notification(request):
+    notifications = Notification.objects.filter(user=request.user).order_by('-id')
+    return render(request, 'video/notification.html', {'notifications':notifications})
 
-    def get_queryset(self):
-        return Notification.objects.filter(user=self.request.user).order_by("-timestmap")
 
+
+
+
+
+
+
+    
 
 def complaint_page(request):
     reports = ReportVideo.objects.all()
@@ -90,29 +83,15 @@ class VideoComplainReport(CreateView):
         form.instance.post_id = self.kwargs['pk']
         return super(VideoComplainReport, self).form_valid(form)
 
+
+
+
+
 def create_video(request):
     if request.method == 'POST':
         title = request.POST['title']
         video = request.FILES.get('video')
         banner = request.FILES.get('banner')
-
-        cap = cv2.VideoCapture(str(video))
-
-        while(cap.isOpened()):
-            ret, frame = cap.read()
-
-            # Resize the frame to the same size as the nudity image
-            frame_resized = cv2.resize(frame, (640, 480))
-
-            # Convert the nudity image to grayscale
-            response = requests.get(NUDE_URL)
-            img_array = np.array(bytearray(response.content), dtype=np.uint8)
-            img_gray = cv2.imdecode(img_array, cv2.IMREAD_GRAYSCALE)
-
-            # Perform template matching
-            result = cv2.matchTemplate(frame_resized, img_gray, cv2.TM_CCOEFF_NORMED)
-            if np.max(result) > 0.9:
-                return HttpResponseBadRequest('This video contains nudes, but nudes are not allowed')
 
         if video:
             video_type = video.content_type.split('/')[0]
@@ -140,6 +119,9 @@ def create_video(request):
             raise ValidationError('No video file uploaded')
 
     return render(request, 'video/create_video.html')
+
+
+
 
 
 

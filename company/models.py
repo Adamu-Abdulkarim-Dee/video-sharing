@@ -30,6 +30,10 @@ class Video(models.Model):
     def __str__(self):
         return str(self.video)
 
+
+
+
+
 class ReportVideo(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,  on_delete=models.CASCADE)
     COMPLAINT = (
@@ -44,6 +48,13 @@ class ReportVideo(models.Model):
 
     def __str__(self):
         return str(self.user)
+
+
+
+
+
+
+
 
 class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL,  on_delete=models.CASCADE)
@@ -63,6 +74,10 @@ class Profile(models.Model):
         return str(self.user)
 
 
+
+
+
+
 class Comment(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,  on_delete=models.CASCADE)
     comments = models.TextField(max_length=200)
@@ -77,15 +92,11 @@ class Comment(models.Model):
     def __str__(self):
         return str(self.user)
 
+
 class Notification(models.Model):
-    is_read = models.BooleanField(default=False)
     user = models.ForeignKey(settings.AUTH_USER_MODEL,  on_delete=models.CASCADE)
     message = models.TextField()
-    timestmap = models.DateTimeField(auto_now_add=True)
-    slug = models.SlugField(unique=True)
-    url = models.ForeignKey(Video, on_delete=models.CASCADE) 
-
-    def __str__(self):
-        return str(self.user)
+    link = models.URLField()
+    read = models.BooleanField(default=False)
 
     

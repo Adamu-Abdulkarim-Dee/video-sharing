@@ -4,7 +4,7 @@ from . import views
 urlpatterns = [
     path('', views.videos, name='Video'),
     path('video-play/<slug:slug>/', views.play_video, name='Play-Video'),
-    path('notification/', views.NotificationListView.as_view(), name='Notification'),
+    path('notification/', views.notification, name='Notification'),
     path('compaint-super-user', views.complaint_page, name='Complain'),
 
     path('CreateVideo', views.create_video, name='Create-Video'),

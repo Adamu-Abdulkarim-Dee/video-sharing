@@ -11,6 +11,8 @@
     <link rel="stylesheet" 
     href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.4/font/bootstrap-icons.css">
     <link href="https://vjs.zencdn.net/8.0.4/video-js.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
 </head>
 <style>
     .thumb{
@@ -26,7 +28,7 @@
     <div class="container">
         <div class="row justify-content-center">
 
-            <div class="col-md-3">
+            <div class="col-md-5">
                 <div class="row">
                     <video id="my-video"
                             class="video-js text-center"
@@ -35,7 +37,7 @@
                             height="400px"
                             data-setup="{}"
                             muted>
-                        <source src="{{ play.video.url }}" type="video/mp4">
+                        <source src="{{ post.video.url }}" type="video/mp4">
                     </video> 
                 </div>
             </div>
@@ -53,8 +55,11 @@
                             </div>
                         </form>
                         <br>
-                            <a class="btn-sm btn btn-danger" href="{% url 'Complain-Video' pk=play.pk %}">
-                                Report</a>
+                            <a class="btn-sm btn btn-danger" href="{% url 'Complain-Video' pk=post.pk %}">
+                                <span class="material-symbols-outlined">
+                                    flag
+                                </span>
+                            </a>
                         {% endif %}
 
                     </div>
@@ -69,17 +74,15 @@
         <div class="row">
 
             {% for comment in public_comments %}
-            <div class="col-md-4">
-                <div class="card my-1 my-card-comment">
-                    <div class="card-header shadow bg-body">
+            <div class="col-md-3">
+                <div class="card my-card-comment">
+                    <div class="card-body">
                         <a style="text-decoration: none;" href="{{ comment.get_user_public_url }}">
                             <p><img class="rounded-circle thumb" src="{{ comment.get_user_photo }}" alt="">
-                                <b>{{ play.user }}</b>
+                                <b>{{ post.user }}</b>
                             </p>
                         </a>                    
-                    </div>
-                    <div class="card-body">
-                        <p>{{ comment.comments }}</p>
+                       <p>{{ comment.comments }}</p>
                     </div>
                 </div>
             </div>

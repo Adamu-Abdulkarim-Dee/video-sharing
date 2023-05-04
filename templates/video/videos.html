@@ -21,9 +21,21 @@
         border-radius: 45px;
         height: 45px;
     }
-    .thumb{
+    .img_wrapper.a img {
+       position: absolute;
+       transform: translate(-50%, -50%);
+       bottom: 100%;
+    }
+
+    .thumb {
+      width: 30px;
+      height: auto;
+    }
+
+    /* Added */
+    .rounded-circle {
         width: 25px;
-        height: auto;
+        height: 25px;
     }
     .btn-primary{
         height: 45px;
@@ -43,31 +55,19 @@
     .img_wrapper{
         position: relative;
     }
-    .img_wrapper a img{
-        position: absolute;
-        bottom: 50px;
-        left: 10px;
-    }
-    .img_wrapper b{
-        position: absolute;
-        bottom: 50px;
-        left: 40px;
+    .video-icons a span{
+        margin-bottom: 35px;
         color: white;
+        font-size: 30px;
+        margin-left: 25px;
     }
-    .video-icons {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: flex-end;
-    }
-
-    .video-icons a {
-    margin-bottom: 10px;
+    .home-icons::-webkit-scrollbar{
+        display: none;
     }
 </style>
 <body>
     <br>
-    <div class="container">
+    <div class="container home-icons">
         <div class="row justify-content-center">
             <div class="col text-center">
                 <div class="icons">
@@ -78,12 +78,9 @@
                     </a>
                     
                 <a href="{% url 'Notification' %}">
-                    {% if unread_notifications %}
-                    {{ unread_notifications }}
                     <span class="material-symbols-outlined">
                         notifications
                     </span>
-                    {% endif %}
                 </a>
                 
                 
@@ -104,66 +101,68 @@
             </div>
         </div>
     </div>
-    <br>
     <div class="container">
         <div class="row justify-content-center">
 
-            <div class="col-md-2">
-                {% for video in my_videos reversed %}
-                <div class="row">
-                    <video id="my-video"
-                            class="video-js text-center"
-                            controls
-                            preload="auto"
-                            height="400px"
-                            data-setup="{}"
-                            muted>
-                        <source src="{{ video.video.url }}" type="video/mp4">
-                    </video>
-                    <br>
-                    <div class="img_wrapper">
-                        <a style="text-decoration: none;" href="{{ video.get_user_public_url }}">
-                            <img class="rounded-circle thumb" src="{{ video.get_user_photo }}" alt="">
-                            <b>{{ video.user }}</b>
-                        </a>
-                    </div>  
-
-                    <div class="video-icons">
-                        <a href="">
-                            <span class="material-symbols-outlined">
-                                fingerprint
-                            </span>
-                        </a>
-                        <a href="{% url 'Play-Video' video.slug %}">
-                            <span class="material-symbols-outlined">
-                                comment
-                            </span>
-                        </a>
-                        <a href="{% url 'Complain-Video' video.pk %}">
-                            <span class="material-symbols-outlined">
-                                flag
-                            </span>
-                        </a>
-                    </div>
-                    
-                    
-                </div>
-                {% endfor %}
-            </div>  
-            
-            <div class="col-md-6">
-                <div class="content-right">
-                    <p>Lorem ipsum dolor sit, amet consectetur
-                        adipisicing elit. Qui, minus, optio atque nostrum 
-                    repellendus delectus eos non veritatis, 
-                    illum soluta quas id aliquid facilis molestiae 
-                    facere nam neque? Fugiat, repellendus.</p>
-                </div>
+            <div class="col">
+               
             </div>
-            
-            
+
+          <div class="col-md-6">
+            {% for video in my_videos reversed %}
+            <div class="row position-relative my-5">
+              <video id="my-video" class="video-js text-center" 
+              controls 
+              preload="auto" 
+              data-setup="{}" 
+              muted>
+                <source src="{{ video.video.url }}" type="video/mp4">
+              </video>
+              <div class="row position-absolute bottom-0 d-flex align-items-end mb-3 mx-auto">
+                <div class="col-md-10 col img_wrapper">
+                  <a style="text-decoration: none;" href="{{ video.get_user_public_url }}">
+                    <div class="row">
+                      <div class="col-auto pe-1">
+                        <img class="rounded-circle thumb" src="{{video.get_user_photo}}" alt="">
+                      </div>
+                      <div class="col ps-1">
+                        <b class="text-white">{{video.user}} <br>
+                            {{ video.created_on }}
+                        </b>
+                      </div>
+                    </div>
+                  </a>
+                </div>
+                <div class="col-md-2 col-auto video-icons d-flex flex-column">
+                  <a href="">
+                    <span class="material-symbols-outlined">
+                      fingerprint
+                    </span>
+                  </a>
+                  <a href="{% url 'Play-Video' video.slug %}">
+                    <span class="material-symbols-outlined">
+                      comment
+                    </span>
+                  </a>
+                  <a href="{% url 'Complain-Video' video.pk %}">
+                    <span class="material-symbols-outlined">
+                      flag
+                    </span>
+                  </a>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+
+          <div class="col">
+            <div class="content-right">
+            </div>
+          </div>
+
+          
         </div>
-    </div>  
+      </div>
     <script src="https://vjs.zencdn.net/8.0.4/video.min.js"></script>
 </body>
 </html>
