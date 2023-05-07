@@ -1,20 +1,18 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Video, ReportVideo, Comment, Profile, Notification
-from .forms import VideoForm, ReportVideoForm, CommentForm, ProfileForm
+from .forms import ReportVideoForm, CommentForm, ProfileForm
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.list import ListView
 from django.urls import reverse_lazy
 from moviepy.video.io.VideoFileClip import VideoFileClip
 from django.core.exceptions import ValidationError
-import cv2
-import numpy as np
 
 def videos(request):
-
-    #I want to access user ip address just to show user 
+    unread_notifications = Notification.objects.filter(user=request.user, read=False).count()
     my_videos = Video.objects.all()
     context = {
         'my_videos':my_videos,
+        'unread_notifications': unread_notifications
     }
     return render(request, 'video/videos.html', context)
 
@@ -91,7 +89,6 @@ def create_video(request):
     if request.method == 'POST':
         title = request.POST['title']
         video = request.FILES.get('video')
-        banner = request.FILES.get('banner')
 
         if video:
             video_type = video.content_type.split('/')[0]
@@ -111,7 +108,6 @@ def create_video(request):
                 user=request.user,
                 title=title,
                 video=video,
-                banner=banner
             )
             new_video.save()
             return redirect('Video')

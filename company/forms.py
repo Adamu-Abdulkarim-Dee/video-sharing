@@ -1,8 +1,23 @@
 from django import forms
-from .models import Video, ReportVideo, Comment, Profile
+from .models import Video, ReportVideo, Comment, Profile, CustomUser
 from django.core.exceptions import ValidationError
 from django.core.validators import FileExtensionValidator
 from django.forms import FileField
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+
+
+class CustomUserCreationForm(UserCreationForm):
+
+    class Meta:
+        model = CustomUser
+        fields = ("email", "username", "country", "created_for", "password1", "password2")
+
+
+class CustomUserChangeForm(UserChangeForm):
+
+    class Meta:
+        model = CustomUser
+        fields = ("email",)
 
 
 class CommentForm(forms.ModelForm):
@@ -11,13 +26,6 @@ class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ['comments']
-
-class VideoForm(forms.ModelForm):
-    video = FileField(validators=[FileExtensionValidator(allowed_extensions=['mp4'])])        
-        
-    class Meta:
-        model = Video
-        fields = ['title', 'video', 'banner']
 
 class ReportVideoForm(forms.ModelForm):
     class Meta:

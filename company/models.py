@@ -1,16 +1,19 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
+from django.utils.translation import gettext_lazy as _
+from .managers import CustomUserManager
 from django.utils.text import slugify
 from django.conf import settings
 import random
 import string
 from django.urls import reverse
+from .choices import *
 
 class Video(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,  on_delete=models.CASCADE)
     title = models.CharField(max_length=70)
     video = models.FileField(upload_to='videos')
     created_on = models.DateTimeField(auto_now_add=True)
-    banner = models.ImageField(upload_to='banner')
     slug = models.SlugField(max_length=100, unique=True)
 
 
@@ -74,10 +77,6 @@ class Profile(models.Model):
         return str(self.user)
 
 
-
-
-
-
 class Comment(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,  on_delete=models.CASCADE)
     comments = models.TextField(max_length=200)
@@ -99,4 +98,18 @@ class Notification(models.Model):
     link = models.URLField()
     read = models.BooleanField(default=False)
 
-    
+
+class CustomUser(AbstractUser):
+    username = models.CharField(max_length=10, unique=True)
+    email = models.EmailField(_("email address"), unique=True)
+    country = models.CharField(choices=LIST_OF_COUNTRY, max_length=35)
+    created_for = models.CharField(choices=CREATED_FOR, max_length=35)
+    is_verified = models.BooleanField(blank=True, null=True)
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['username']
+
+    objects = CustomUserManager()
+
+    def __str__(self):
+        return str(self.username)

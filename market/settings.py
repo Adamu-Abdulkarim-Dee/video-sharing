@@ -33,6 +33,10 @@ INSTALLED_APPS = [
     'company'
 ]
 
+AUTH_USER_MODEL='company.CustomUser'
+
+ACCOUNT_AUTHENTICATION_METHOD ="email"
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -118,14 +122,7 @@ STATICFILES_DIR = (os.path.join(BASE_DIR, 'static'),)
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
-STATICFILES_DIR = (
-    os.path.join(BASE_DIR, 'static'),)
-
 MEDIA_URL ='/images/'
-
-STATICFILES_DIR = [
-    BASE_DIR / 'static'
-]
 
 MEDIA_ROOT = BASE_DIR / 'static/images'
 
