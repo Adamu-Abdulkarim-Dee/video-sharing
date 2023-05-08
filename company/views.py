@@ -1,11 +1,21 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Video, ReportVideo, Comment, Profile, Notification
-from .forms import ReportVideoForm, CommentForm, ProfileForm
+from .models import *
+from .forms import *
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.list import ListView
 from django.urls import reverse_lazy
 from moviepy.video.io.VideoFileClip import VideoFileClip
 from django.core.exceptions import ValidationError
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import login as auth_login
+
+def dashboard(request):
+    my_videos = Video.objects.all()
+    context = {
+        'my_videos':my_videos,
+    }
+    return render(request, 'dashboard.html', context)
 
 def videos(request):
     unread_notifications = Notification.objects.filter(user=request.user, read=False).count()
@@ -47,8 +57,15 @@ def notification(request):
 
 
 
+def all_users(request):
+    users = CustomUser.objects.all()
+    context = {
+        'users': users
+    }
+    return render(request, 'control/user.html', context)
 
-
+class Delete_users(DeleteView):
+    model = CustomUser
     
 
 def complaint_page(request):
@@ -123,10 +140,10 @@ def create_video(request):
 
 
 def profile(request):
-    books = Video.objects.filter(user=request.user)
     user_profile = Profile.objects.filter(user=request.user)
+    videos = Video.objects.filter(user=request.user)
     context = {
-        'books': books,
+        'videos': videos,
         'user_profile': user_profile
     }
     return render(request, 'profile.html', context)
@@ -149,3 +166,32 @@ class EditProfile(UpdateView):
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super(EditProfile, self).form_valid(form)
+
+
+'''
+for registration and login system
+'''
+
+def register(request):
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('Login')
+    else:
+        form = CustomUserCreationForm()
+    return render(request, 'register.html', {'form':form})
+
+def login(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            email = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(request, username=email, password=password)
+            if user is not None:
+                auth_login(request, user)
+                return redirect('Video')
+    else:
+        form = AuthenticationForm()
+    return render(request, 'login.html', {'form':form})

@@ -30,12 +30,12 @@ INSTALLED_APPS = [
     'crispy_forms',
     'crispy_bootstrap5',
     'bootstrap5',
-    'company'
+    'company',
 ]
 
 AUTH_USER_MODEL='company.CustomUser'
 
-ACCOUNT_AUTHENTICATION_METHOD ="email"
+AUTHENTICATION_BACKENDS = ['company.backends.EmailBackend']
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -66,6 +66,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'market.wsgi.application'
+
 
 
 # Database

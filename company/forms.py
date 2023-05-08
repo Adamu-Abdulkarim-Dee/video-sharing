@@ -3,8 +3,10 @@ from .models import Video, ReportVideo, Comment, Profile, CustomUser
 from django.core.exceptions import ValidationError
 from django.core.validators import FileExtensionValidator
 from django.forms import FileField
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm, AuthenticationForm
 
+class LoginForm(AuthenticationForm):
+    email = forms.EmailField(label='Email')
 
 class CustomUserCreationForm(UserCreationForm):
 
@@ -17,11 +19,11 @@ class CustomUserChangeForm(UserChangeForm):
 
     class Meta:
         model = CustomUser
-        fields = ("email",)
+        fields = ("email", "username", "password")
 
 
 class CommentForm(forms.ModelForm):
-    comments = forms.CharField(label='Comments', widget=forms.Textarea(attrs={'rows':'1'}), max_length=200)
+    comments = forms.CharField(label='Comments', max_length=50)
 
     class Meta:
         model = Comment
@@ -35,4 +37,4 @@ class ReportVideoForm(forms.ModelForm):
 class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = ['profile_photo', 'about', 'twitter', 'linkedln', 'website', 'country']
+        fields = ['profile_photo', 'twitter', 'website']

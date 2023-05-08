@@ -69,55 +69,6 @@
   }
 </style>
 <body>
-  <nav class="navbar navbar-light bg-light shadow bg-body fixed-top">
-    <div class="container">
-      <form action="" method="get">
-        <input name="seach_query" id="seach_query" class="form-control icon" maxlength="12">
-      </form>
-      <div class="row justify-content-center my-2">
-
-        <div class="col text-center">
-          <div class="navbar-icons">
-            <a href="{% url 'Video' %}">
-              <span class="material-symbols-outlined">
-                  home
-              </span>
-          </a>
-          {% if unread_notifications %}
-          <a href="{% url 'Notification' %}">
-            <span class="material-symbols-outlined">
-                notifications
-            </span>
-          {{ unread_notifications }}
-        </a>
-        {% else %}
-        <a href="{% url 'Notification' %}">
-          <span class="material-symbols-outlined">
-            notifications
-        </span>
-        </a>
-        {% endif %}
-          <a href="{% url 'Create-Video' %}">
-            <span class="material-symbols-outlined">
-                add
-            </span>
-        </a>
-          <a href="{% url 'Profile' %}">
-            <span class="material-symbols-outlined">
-                account_circle
-            </span>
-        </a> 
-        <a href="">
-          <span class="material-symbols-outlined">
-            logout
-        </span>
-        </a>
-        </div>
-      </div>
-
-      </div>
-    </div>
-  </nav>
     <div  class="container video-container">
         <div class="row justify-content-center">
 
@@ -206,7 +157,6 @@ crossorigin="anonymous">
   window.addEventListener('resize', playVideoInView);
   window.addEventListener('load', playVideoInView);
 </script>
-
 
 
 </body>

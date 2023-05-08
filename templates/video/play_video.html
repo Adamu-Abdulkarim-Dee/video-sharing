@@ -67,26 +67,31 @@
     }
 </style>
 <body>
-    <nav class="navbar navbar-light bg-light shadow bg-body">
+    <nav class="navbar navbar-light bg-light shadow bg-body fixed-top">
         <div class="container">
-          <form action="" method="get">
-            <input name="seach_query" id="seach_query" class="form-control icon">
-          </form>
           <div class="row justify-content-center my-2">
     
-            <div class="col">
+            <div class="col text-end">
               <div class="navbar-icons">
                 <a href="{% url 'Video' %}">
                   <span class="material-symbols-outlined">
                       home
                   </span>
               </a>
-              
+              {% if unread_notifications %}
               <a href="{% url 'Notification' %}">
                 <span class="material-symbols-outlined">
                     notifications
                 </span>
+              {{ unread_notifications }}
             </a>
+            {% else %}
+            <a href="{% url 'Notification' %}">
+              <span class="material-symbols-outlined">
+                notifications
+            </span>
+            </a>
+            {% endif %}
               <a href="{% url 'Create-Video' %}">
                 <span class="material-symbols-outlined">
                     add
@@ -111,10 +116,11 @@
     <div class="container">
         <div class="row justify-content-center">
 
-            <div class="col">
+            <div class="col p-2">
                 <div class="row">
                     <video id="my-video" class="video-js vjs-theme-city vjs-default-skin vjs-big-play-button vjs-duration-display text-center" autoplay auto="true" width="1000" controls data-setup="{}"
                             controls
+                            loop
                             height="400px"
                             data-setup="{}"
                             muted>

@@ -11,7 +11,7 @@ from .choices import *
 
 class Video(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,  on_delete=models.CASCADE)
-    title = models.CharField(max_length=70)
+    title = models.CharField(max_length=20)
     video = models.FileField(upload_to='videos')
     created_on = models.DateTimeField(auto_now_add=True)
     slug = models.SlugField(max_length=100, unique=True)
@@ -49,6 +49,12 @@ class ReportVideo(models.Model):
     post = models.ForeignKey(Video, on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
 
+    def get_user_public_url(self):
+        return reverse('Public-Profile', kwargs={'slug': self.user.profile.slug})
+
+    def get_user_photo(self):
+        return self.user.profile.profile_photo.url
+
     def __str__(self):
         return str(self.user)
 
@@ -64,8 +70,6 @@ class Profile(models.Model):
     profile_photo = models.ImageField(upload_to='profile-image', default='static/dafault.jpg')
     twitter = models.URLField(blank=True, null=True, unique=True)
     website = models.URLField(blank=True, null=True, unique=True)
-    linkedln = models.URLField(blank=True, null=True, unique=True)
-    country = models.CharField(max_length=70, blank=True, null=True,)
     about = models.TextField(max_length=700, blank=True, null=True)
     slug = models.SlugField(max_length=100, unique=True)
 
@@ -79,7 +83,7 @@ class Profile(models.Model):
 
 class Comment(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,  on_delete=models.CASCADE)
-    comments = models.TextField(max_length=200)
+    comments = models.CharField(max_length=50)
     post = models.ForeignKey(Video, on_delete=models.CASCADE)
 
     def get_user_public_url(self):
@@ -110,6 +114,12 @@ class CustomUser(AbstractUser):
     REQUIRED_FIELDS = ['username']
 
     objects = CustomUserManager()
+
+    def get_user_public_url(self):
+        return reverse('Public-Profile', kwargs={'slug': self.profile.slug})
+
+    def get_user_photo(self):
+        return self.profile.profile_photo.url
 
     def __str__(self):
         return str(self.username)

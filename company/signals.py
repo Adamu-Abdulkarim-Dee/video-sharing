@@ -4,6 +4,9 @@ from django.dispatch import receiver
 from .models import Profile, Notification, Comment
 from django.urls import reverse
 
+
+
+
 User = settings.AUTH_USER_MODEL
 
 @receiver(post_save, sender=User)
