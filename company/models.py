@@ -1,21 +1,17 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
-from django.utils.translation import gettext_lazy as _
-from .managers import CustomUserManager
+from .choices import *
 from django.utils.text import slugify
 from django.conf import settings
 import random
 import string
 from django.urls import reverse
-from .choices import *
 
 class Video(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,  on_delete=models.CASCADE)
     title = models.CharField(max_length=20)
     video = models.FileField(upload_to='videos')
     created_on = models.DateTimeField(auto_now_add=True)
-    slug = models.SlugField(max_length=100, unique=True)
-
+    number_of_views = models.IntegerField(default=0)
 
     def get_user_public_url(self):
         return reverse('Public-Profile', kwargs={'slug': self.user.profile.slug})
@@ -35,42 +31,13 @@ class Video(models.Model):
 
 
 
-
-
-class ReportVideo(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,  on_delete=models.CASCADE)
-    COMPLAINT = (
-        ('Pornography', 'Pornography'),
-        ('Graphic Violence', 'Graphic Violence'),
-        ('Predators Behavior', 'Predators Behavior'),
-    )
-    this_is = models.CharField(max_length=100, choices=COMPLAINT)
-    more_information = models.TextField(max_length=400)
-    post = models.ForeignKey(Video, on_delete=models.CASCADE)
-    date = models.DateTimeField(auto_now_add=True)
-
-    def get_user_public_url(self):
-        return reverse('Public-Profile', kwargs={'slug': self.user.profile.slug})
-
-    def get_user_photo(self):
-        return self.user.profile.profile_photo.url
-
-    def __str__(self):
-        return str(self.user)
-
-
-
-
-
-
-
-
 class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL,  on_delete=models.CASCADE)
-    profile_photo = models.ImageField(upload_to='profile-image', default='static/dafault.jpg')
-    twitter = models.URLField(blank=True, null=True, unique=True)
-    website = models.URLField(blank=True, null=True, unique=True)
-    about = models.TextField(max_length=700, blank=True, null=True)
+    photo = models.ImageField(upload_to='profile-image', default='static/dafault.jpg')
+    about = models.TextField(max_length=100, blank=True, null=True)
+    country = models.CharField(max_length=50, choices=LIST_OF_COUNTRY, blank=True, null=True)
+    created_for = models.CharField(max_length=50, choices=CREATED_FOR, blank=True, null=True)
+
     slug = models.SlugField(max_length=100, unique=True)
 
     def save(self, *args, **kwargs):
@@ -103,23 +70,23 @@ class Notification(models.Model):
     read = models.BooleanField(default=False)
 
 
-class CustomUser(AbstractUser):
-    username = models.CharField(max_length=10, unique=True)
-    email = models.EmailField(_("email address"), unique=True)
-    country = models.CharField(choices=LIST_OF_COUNTRY, max_length=35)
-    created_for = models.CharField(choices=CREATED_FOR, max_length=35)
-    is_verified = models.BooleanField(blank=True, null=True)
-
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username']
-
-    objects = CustomUserManager()
+class ReportVideo(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,  on_delete=models.CASCADE)
+    COMPLAINT = (
+        ('Pornography', 'Pornography'),
+        ('Graphic Violence', 'Graphic Violence'),
+        ('Predators Behavior', 'Predators Behavior'),
+    )
+    this_is = models.CharField(max_length=100, choices=COMPLAINT)
+    more_information = models.TextField(max_length=400)
+    post = models.ForeignKey(Video, on_delete=models.CASCADE)
+    date = models.DateTimeField(auto_now_add=True)
 
     def get_user_public_url(self):
-        return reverse('Public-Profile', kwargs={'slug': self.profile.slug})
+        return reverse('Public-Profile', kwargs={'slug': self.user.profile.slug})
 
     def get_user_photo(self):
-        return self.profile.profile_photo.url
+        return self.user.profile.profile_photo.url
 
     def __str__(self):
-        return str(self.username)
+        return str(self.user)

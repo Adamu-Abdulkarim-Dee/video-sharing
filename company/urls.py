@@ -1,26 +1,20 @@
 from django.urls import path
-from . import views
+from . import views 
 
 urlpatterns = [
-    path('', views.dashboard, name='Dashboard'),
-    path('home', views.videos, name='Video'),
-    path('video-play/<slug:slug>/', views.play_video, name='Play-Video'),
-    path('notification/', views.notification, name='Notification'),
+    path('', views.home, name='home'),
 
-    path('delete-user', views.all_users, name='users'),
-    path('delete<slug:slug>', views.Delete_users.as_view(), name='Delete-user'),
-    path('compaint-super-user', views.complaint_page, name='Complain'),
+    path('videos/api/', views.video),
 
-    path('CreateVideo', views.create_video, name='Create-Video'),
-    path('videos-play/<int:pk>/', views.ComplainReport.as_view(), name='Complain-Video'),
+    path('video/create/', views.create_video),
 
-    path('videos-play-complaint/<int:pk>', views.VideoComplainReport.as_view(), name='Complain-Video'),
+    path('comment/video/api/<slug:slug>/', views.comment_video),
 
-    path('my-profile', views.profile, name='Profile'),
-    path('profile/<slug:slug>/', views.public_profile, name='Public-Profile'),
+    path('user_profile/api/', views.profile),
 
-    path('register', views.register, name='Register'),
-    path('login', views.login, name='Login'),
+    path('public_user/profile/api/<slug:slug>', views.public_profile),
 
-    path('edit-profile/<slug:slug>/', views.EditProfile.as_view(), name='Edit-Profile'),
+    path('update_user/profile/api/<slug:slug>', views.update_profile),
+
+    path('notification/api/', views.notification),
 ]

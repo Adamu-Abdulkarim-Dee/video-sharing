@@ -31,11 +31,8 @@ INSTALLED_APPS = [
     'crispy_bootstrap5',
     'bootstrap5',
     'company',
+    'rest_framework',
 ]
-
-AUTH_USER_MODEL='company.CustomUser'
-
-AUTHENTICATION_BACKENDS = ['company.backends.EmailBackend']
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
